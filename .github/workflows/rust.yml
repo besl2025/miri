@@ -1,0 +1,31 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+0
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    -name:Installoxdraw
+        run:cargoinstalloxdraw
+    -name:Renderall.mmdfiles
+        run:|
+          find . -name "*.mmd" | while read f; do
+            oxdraw --input "$f" --png --scale 5
+          done
+      -name:Commitandpushimages
+        run: |
+          git config user.name "github-actions"
+          git add *.png
+          git commit -m "Auto-generate diagrams" || exit 0
+          git push
